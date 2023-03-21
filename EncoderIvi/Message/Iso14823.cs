@@ -8,8 +8,8 @@ namespace EncoderIvi.Message
 {
     public class Iso14823
     {
-        public PictogramCode? pictogramCode { get; set; }
-        //public List<Attribute>? attributes { get; set; }
-        public object? itisCodes { get; set; }
+        public PictogramCode pictogramCode { get; set; }
+        public List<Attribute> attributes { get; set; }
+        public object itisCodes { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace EncoderIvi
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Json2PerBitAdapter.MakeRequest(textBox1.Text);
+            Request.MakeRequest(textBox1.Text);
             
         }
 
