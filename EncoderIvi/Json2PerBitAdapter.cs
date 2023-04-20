@@ -5,13 +5,15 @@ using System.Net.Http.Headers;
 using EncoderIvi.Message;
 using PerEncDec.IVI.IVIModule;
 using System.ComponentModel;
+using System.Windows.Forms;
+using System.Security.Cryptography.X509Certificates;
+using Newtonsoft.Json.Bson;
 
 namespace EncoderIvi
 {
     public static class Json2PerBitAdapter
     {
-
-        public static void Json2Bit(Root deserializedJson)
+        public static PerEncDec.IVI.IVIMPDUDescriptions.IVIM Json2Bit(Root deserializedJson, Form1 form)
         {
 
             var countryCodeBits = new BitArray(10);
@@ -41,7 +43,13 @@ namespace EncoderIvi
             rootIVI.IviField.Mandatory.ServiceProviderId.CountryCode = new PerEncDec.Asn1.BitString(countryCodeBits);
             rootIVI.IviField.Mandatory.ServiceProviderId.ProviderIdentifier = deserializedJson.data.ivi[0].mandatory.serviceProviderId.providerIdentifier;
             rootIVI.IviField.Mandatory.IviIdentificationNumber = deserializedJson.data.ivi[0].mandatory.iviIdentificationNumber;
-            rootIVI.IviField.Mandatory.TimeStamp = deserializedJson.data.ivi[0].mandatory.timeStamp;
+
+            DateTime unixEpoch = new DateTime(1970, 1, 1);
+            DateTime currentTime = DateTime.UtcNow;
+            TimeSpan elapsedTime = currentTime.Subtract(unixEpoch);
+            long unixTimstamp = (long)elapsedTime.TotalMilliseconds;
+
+            rootIVI.IviField.Mandatory.TimeStamp = unixTimstamp;
             rootIVI.IviField.Mandatory.ValidFrom = deserializedJson.data.ivi[0].mandatory.validFrom;
             rootIVI.IviField.Mandatory.ValidTo = deserializedJson.data.ivi[0].mandatory.validTo;
 
@@ -332,6 +340,18 @@ namespace EncoderIvi
 
                             rootIVI.IviField.Optional[1].Giv[0].RoadSignCodes[0].Code.Iso14823.Attributes.Add(vedToAdd);
                         }
+                        //SPE
+                        else if (attr.SPE is not null)
+                        {
+                            PerEncDec.IVI.IVIModule.ISO14823Attribute speToAdd = new PerEncDec.IVI.IVIModule.ISO14823Attribute();
+                            speToAdd.Spe = new PerEncDec.IVI.GDD.InternationalSignSpeedLimits();
+
+                            speToAdd.Spe.SpeedLimitMax = (int)(long)attr.SPE.speedLimitMax;
+                            speToAdd.Spe.SpeedLimitMin = (int)(long)attr.SPE.speedLimitMin;
+                            speToAdd.Spe.Unit = (int)(long)attr.SPE.unit;
+
+                            rootIVI.IviField.Optional[1].Giv[0].RoadSignCodes[0].Code.Iso14823.Attributes.Add(speToAdd);
+                        }
                     }
                 }
             }
@@ -376,14 +396,7 @@ namespace EncoderIvi
             //rootIVI.IviField.Optional[0].Tc[0].Text = deserializedJson.data.ivi[0].optional[0].IviContainer.tc[0].TcPart.text;
             rootIVI.IviField.Optional[2].Tc[0].Data = BitConverter.GetBytes(deserializedJson.data.ivi[0].optional[0].IviContainer.tc[0].TcPart.data.Value.Ticks);
 
-
-            PerUnalignedCodec codec = new PerUnalignedCodec();
-            byte[] ivib = codec.Encode(rootIVI);
-            File.WriteAllBytes("MessageBin.ivi", ivib);
-
-            PerEncDec.IVI.IVIMPDUDescriptions.IVIM rootIvi2 = new PerEncDec.IVI.IVIMPDUDescriptions.IVIM();
-            codec.Decode(ivib, 0, rootIvi2);
-            
+            return rootIVI;
         }     
     }
 }
