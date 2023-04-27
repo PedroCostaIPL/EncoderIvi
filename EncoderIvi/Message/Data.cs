@@ -9,6 +9,6 @@ namespace EncoderIvi.Message
     public class Data
     {
         public Header? header { get; set; }
-        public List<Ivi>? ivi { get; set; }
+        public Ivi? ivi { get; set; }
     }
 }
