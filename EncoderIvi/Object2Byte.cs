@@ -37,7 +37,7 @@ namespace EncoderIvi
 
             //Creating byte file
             File.WriteAllBytes("Ivim_"+ ivimID+".ivi", final);
-
+            MessageBox.Show("File created");
         }
 
     }

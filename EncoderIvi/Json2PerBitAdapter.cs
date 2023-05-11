@@ -59,10 +59,20 @@ namespace EncoderIvi
             rootIVI.IviField.Mandatory.IviStatus = (int)deserializedJson.data.ivi.mandatory.iviStatus;
 
             //Optional
-            rootIVI.IviField.Optional = new PerEncDec.IVI.IVIModule.IviContainers
+            if (deserializedJson.data.ivi.optional[0].IviContainer.tc is not null)
             {
-                new PerEncDec.IVI.IVIModule.IviContainer(),new PerEncDec.IVI.IVIModule.IviContainer(),new PerEncDec.IVI.IVIModule.IviContainer()
-            };
+                rootIVI.IviField.Optional = new PerEncDec.IVI.IVIModule.IviContainers
+                {
+                    new PerEncDec.IVI.IVIModule.IviContainer(),new PerEncDec.IVI.IVIModule.IviContainer(),new PerEncDec.IVI.IVIModule.IviContainer()
+                };
+            }
+            else {
+                rootIVI.IviField.Optional = new PerEncDec.IVI.IVIModule.IviContainers
+                {
+                    new PerEncDec.IVI.IVIModule.IviContainer(),new PerEncDec.IVI.IVIModule.IviContainer()
+                };
+            }
+
 
             //Glc
             rootIVI.IviField.Optional[0].Glc = new PerEncDec.IVI.IVIModule.GeographicLocationContainer();
@@ -369,32 +379,36 @@ namespace EncoderIvi
             rootIVI.IviField.Optional[1].Giv[0].ExtraText[0].Language = new PerEncDec.Asn1.BitString(10);
             rootIVI.IviField.Optional[1].Giv[0].ExtraText[0].TextContent = deserializedJson.data.ivi.optional[0].IviContainer.giv[0].GicPart.extraText.ToString();
 
-
-            //Tc
-            rootIVI.IviField.Optional[2].Tc = new PerEncDec.IVI.IVIModule.TextContainer
-            {                   
-                new PerEncDec.IVI.IVIModule.TcPart()
-            };
-
-            rootIVI.IviField.Optional[2].Tc[0].DetectionZoneIds = new PerEncDec.IVI.IVIModule.ZoneIds();
-            foreach (DetectionZone detectionZone in deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.DetectionZone)
+            if (deserializedJson.data.ivi.optional[0].IviContainer.tc is not null) 
             {
-                rootIVI.IviField.Optional[2].Tc[0].DetectionZoneIds.Add(detectionZone.Zid);
+                //Tc
+                rootIVI.IviField.Optional[2].Tc = new PerEncDec.IVI.IVIModule.TextContainer
+                {
+                    new PerEncDec.IVI.IVIModule.TcPart()
+                };
+
+                rootIVI.IviField.Optional[2].Tc[0].DetectionZoneIds = new PerEncDec.IVI.IVIModule.ZoneIds();
+                foreach (DetectionZone detectionZone in deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.DetectionZone)
+                {
+                    rootIVI.IviField.Optional[2].Tc[0].DetectionZoneIds.Add(detectionZone.Zid);
+                }
+
+                rootIVI.IviField.Optional[2].Tc[0].RelevanceZoneIds = new PerEncDec.IVI.IVIModule.ZoneIds();
+                foreach (RelevanceZone relevanceZone in deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.RelevanceZone)
+                {
+                    rootIVI.IviField.Optional[2].Tc[0].RelevanceZoneIds.Add(relevanceZone.Zid);
+                }
+
+                rootIVI.IviField.Optional[2].Tc[0].Direction = (int?)deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.Direction;
+                rootIVI.IviField.Optional[2].Tc[0].MinimumAwarenessTime = (int?)deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.minimumAwarenessZoneIds;
+                rootIVI.IviField.Optional[2].Tc[0].LayoutId = (long?)deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.layoutId;
+                rootIVI.IviField.Optional[2].Tc[0].PreStoredlayoutId = (long?)deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.preStoredlayoutId;
+                rootIVI.IviField.Optional[2].Tc[0].Text = new PerEncDec.IVI.IVIModule.TextLines();
+                //rootIVI.IviField.Optional[0].Tc[0].Text = deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.text;
+                byte[] databyte = { deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.data };
+                rootIVI.IviField.Optional[2].Tc[0].Data = databyte;
             }
 
-            rootIVI.IviField.Optional[2].Tc[0].RelevanceZoneIds = new PerEncDec.IVI.IVIModule.ZoneIds();
-            foreach (RelevanceZone relevanceZone in deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.RelevanceZone)
-            {
-                rootIVI.IviField.Optional[2].Tc[0].RelevanceZoneIds.Add(relevanceZone.Zid);
-            }
-
-            rootIVI.IviField.Optional[2].Tc[0].Direction = (int?)deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.Direction;
-            rootIVI.IviField.Optional[2].Tc[0].MinimumAwarenessTime = (int?)deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.minimumAwarenessZoneIds;
-            rootIVI.IviField.Optional[2].Tc[0].LayoutId = (long?)deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.layoutId;
-            rootIVI.IviField.Optional[2].Tc[0].PreStoredlayoutId = (long?)deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.preStoredlayoutId;
-            rootIVI.IviField.Optional[2].Tc[0].Text = new PerEncDec.IVI.IVIModule.TextLines();
-            //rootIVI.IviField.Optional[0].Tc[0].Text = deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.text;
-            rootIVI.IviField.Optional[2].Tc[0].Data = BitConverter.GetBytes(deserializedJson.data.ivi.optional[0].IviContainer.tc[0].TcPart.data.Value.Ticks);
 
             return rootIVI;
         }     

@@ -9,6 +9,6 @@ namespace EncoderIvi.Message
     public class Segment
     {
         public Line? line { get; set; }
-        public object? laneWidth { get; set; }
+        public int laneWidth { get; set; }
     }
 }

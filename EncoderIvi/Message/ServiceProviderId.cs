@@ -8,7 +8,7 @@ namespace EncoderIvi.Message
 {
     public class ServiceProviderId
     {
-        public string? countryCode { get; set; }
+        public string countryCode { get; set; }
         public int providerIdentifier { get; set; }
     }
 }

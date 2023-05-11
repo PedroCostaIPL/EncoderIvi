@@ -15,6 +15,6 @@ namespace EncoderIvi.Message
         public object? layoutId { get; set; }
         public object? preStoredlayoutId { get; set; }
         public List<object>? text { get; set; }
-        public DateTime? data { get; set; }
+        public byte data { get; set; }
     }
 }
