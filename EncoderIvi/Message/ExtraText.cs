@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace EncoderIvi.Message
 {
-    public class ServiceProviderId
+    public class ExtraText
     {
-        public int countryCode { get; set; }
-        public int providerIdentifier { get; set; }
+        public Text Text { get; set; }
     }
 }

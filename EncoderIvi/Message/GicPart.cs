@@ -10,6 +10,7 @@ namespace EncoderIvi.Message
     {
         public List<DetectionZoneId>? detectionZoneIds { get; set; }
         public List<RelevanceZoneId>? relevanceZoneIds { get; set; }
+        public List<DriverAwarenessZoneId>? driverAwarenessZoneIds { get; set; }
         public object? direction { get; set; }
         public object? minimumAwarenessTime { get; set; }
         public int? iviType { get; set; }
@@ -19,6 +20,6 @@ namespace EncoderIvi.Message
         public object? layoutId { get; set; }
         public object? preStoredlayoutId { get; set; }
         public List<RoadSignCode>? roadSignCodes { get; set; }
-        public List<object>? extraText { get; set; }
+        public List<ExtraText>? extraText { get; set; }
     }
 }

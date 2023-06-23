@@ -68,7 +68,7 @@
             // 
             comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox1.FormattingEnabled = true;
-            comboBox1.Items.AddRange(new object[] { "GeoNetworking", "Option2" });
+            comboBox1.Items.AddRange(new object[] { "GeoNetworking", "No Header" });
             comboBox1.Location = new Point(456, 70);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(121, 23);

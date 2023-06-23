@@ -13,7 +13,7 @@ namespace EncoderIvi
         public Form1()
         {
             InitializeComponent();
-            textBox2.Text = "http://projeto-informatico2.test/api/getivim/json/";
+            textBox2.Text = "http://projeto-informatico2.test/api/getivimnotc/json/";
         }
 
         private async void button1_Click(object sender, EventArgs e)

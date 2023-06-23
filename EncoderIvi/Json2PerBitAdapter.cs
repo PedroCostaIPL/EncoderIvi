@@ -29,6 +29,7 @@ namespace EncoderIvi
             countryCodeBits.Set(9, false);
 
 
+
             PerEncDec.IVI.IVIMPDUDescriptions.IVIM rootIVI = new PerEncDec.IVI.IVIMPDUDescriptions.IVIM();
             //Header
             rootIVI.Header = new PerEncDec.IVI.ITSContainer.ItsPduHeader();
@@ -40,10 +41,23 @@ namespace EncoderIvi
             rootIVI.IviField = new PerEncDec.IVI.IVIModule.IviStructure();
             rootIVI.IviField.Mandatory = new PerEncDec.IVI.IVIModule.IviManagementContainer();
             rootIVI.IviField.Mandatory.ServiceProviderId = new PerEncDec.IVI.EfcDsrcApplication.Provider();
-            rootIVI.IviField.Mandatory.ServiceProviderId.CountryCode = new PerEncDec.Asn1.BitString(countryCodeBits);
+
+
+            //Mandatory//CountryCode
+            int countryCode = deserializedJson.data.ivi.mandatory.serviceProviderId.countryCode;
+            string binary = Convert.ToString(countryCode, 2);
+            BitArray bitArray = new BitArray(binary.Length);
+            for (int i = 0; i < binary.Length; i++)
+            {
+                bitArray[i] = binary[i] == '1';
+            }
+            rootIVI.IviField.Mandatory.ServiceProviderId.CountryCode = new PerEncDec.Asn1.BitString(bitArray);
+
+            //Mandatory//providerIdentifier & iviIdentificationNumber
             rootIVI.IviField.Mandatory.ServiceProviderId.ProviderIdentifier = deserializedJson.data.ivi.mandatory.serviceProviderId.providerIdentifier;
             rootIVI.IviField.Mandatory.IviIdentificationNumber = deserializedJson.data.ivi.mandatory.iviIdentificationNumber;
 
+            //Mandatory//TimeStamp
             DateTime unixEpoch = new DateTime(1970, 1, 1);
             DateTime currentTime = DateTime.UtcNow;
             TimeSpan elapsedTime = currentTime.Subtract(unixEpoch);
@@ -146,6 +160,12 @@ namespace EncoderIvi
             foreach (RelevanceZoneId relevanceZoneId in deserializedJson.data.ivi.optional[0].IviContainer.giv[0].GicPart.relevanceZoneIds)
             {
                 rootIVI.IviField.Optional[1].Giv[0].RelevanceZoneIds.Add(relevanceZoneId.Zid);
+            }
+
+            rootIVI.IviField.Optional[1].Giv[0].DriverAwarenessZoneIds = new PerEncDec.IVI.IVIModule.ZoneIds();
+            foreach (DriverAwarenessZoneId driverAwarenessZoneId in deserializedJson.data.ivi.optional[0].IviContainer.giv[0].GicPart.driverAwarenessZoneIds)
+            {
+                rootIVI.IviField.Optional[1].Giv[0].DriverAwarenessZoneIds.Add(driverAwarenessZoneId.Zid);
             }
 
             rootIVI.IviField.Optional[1].Giv[0].Direction = (int?)deserializedJson.data.ivi.optional[0].IviContainer.giv[0].GicPart.direction;
@@ -376,8 +396,8 @@ namespace EncoderIvi
             {
                 new PerEncDec.IVI.IVIModule.Text()
             };
-            rootIVI.IviField.Optional[1].Giv[0].ExtraText[0].Language = new PerEncDec.Asn1.BitString(10);
-            rootIVI.IviField.Optional[1].Giv[0].ExtraText[0].TextContent = deserializedJson.data.ivi.optional[0].IviContainer.giv[0].GicPart.extraText.ToString();
+            rootIVI.IviField.Optional[1].Giv[0].ExtraText[0].Language = new PerEncDec.Asn1.BitString(bitArray);
+            rootIVI.IviField.Optional[1].Giv[0].ExtraText[0].TextContent = deserializedJson.data.ivi.optional[0].IviContainer.giv[0].GicPart.extraText[0].Text.textContent + "\n";
 
             if (deserializedJson.data.ivi.optional[0].IviContainer.tc is not null) 
             {
